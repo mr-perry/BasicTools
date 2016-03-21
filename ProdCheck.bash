@@ -1,21 +1,18 @@
 #!/bin/bash
 ############################################################
 #                                                          #
-# Authoritative Event Catalog Check                        #
+# Production Host Missing Event Check                      #
 #                                                          #
-# This script checks whether or not events redirect to     #
-# another event page.  The input file must be in ComCat    #
-# format.  There is another script if the input is in      #
-# LibComCat format.                                        #
+# This script checks whether or not events exist in one    #
+# of two production host. The input file is a list of      #
+# missing events.  If the events were determined to be     #
+# missing from production host 2, then you would select    #
+# 2 as the production host to check.                       #
 #                                                          #
-# Input can be obtained by downloading from the ComCat Web #
-# search, or using the getData.bash script found in this   #
-# directory.  If the input was obtained using LibComCat    #
-# LibCatStat must be used                                  #
-#                                                          # 
 # Outputs:                                                 # 
 # NA.txt - Non-authoritative events                        #
 # A.txt - Authoritative events                             #
+# M_output.txt - Truly missing events
 # curl_OP.txt - Original output from curl                  #
 # EventId.csv - List of event IDs processed                #
 #                                                          #
@@ -28,12 +25,18 @@ clear
 # Get File Name
 #
 read -p "Enter File Name:  " file
+read -p "Enter Production Host to check(0-ComCat, 1-Prod01, 2-Prod02):   " prod
 echo Getting Event IDs
-awk -v F1="$file" -F "\"*,\"*" '{print $12}' "${file}" > EventId.csv
 echo Pulling information from server
-for event in $(<EventId.csv)
+for event in $(<${file})
 do
-	OP=$(curl -s -I "http://earthquake.usgs.gov/earthquakes/eventpage/${event}" | grep HTTP)
+	if [ $prod == 1 ]; then
+		OP=$(curl -s -I "http://prod01-earthquake.cr.usgs.gov/earthquakes/eventpage/${event}" | grep HTTP)
+	elif [ $prod == 2 ]; then
+		OP=$(curl -s -I "http://prod02-earthquake.cr.usgs.gov/earthquakes/eventpage/${event}" | grep HTTP)
+	else
+		OP=$(curl -s -I "http://earthquake.usgs.gov/earthquakes/eventpage/${event}" | grep HTTP)
+	fi
 	if [ -z "$OP" ]; then
 		OP=BLANK
 	fi
@@ -42,6 +45,7 @@ done
 echo Parsing according to status message
 grep "Moved Permanently" TMP.txt | awk '{print $1}' > NonAuthoritative_output.txt
 grep "200 OK" TMP.txt | awk '{print $1}'  > Authoritative_output.txt
+grep "404 Not Found" TMP.txt | awk '{print $1}' > Missing.txt
 grep "Service Unavailable" TMP.txt | awk '{print $1}' > ServiceUA_output.txt
 grep "BLANK" TMP.txt | awk '{print $1}' >> ServiceUA_output.txt
 echo Rerunning Service Unavailable Events
@@ -50,7 +54,13 @@ while [ -s "$UAfile" ]
 do
 	for UA in $(<ServiceUA_output.txt)
 	do
-		UA_OP=$(curl -s -I "http://earthquake.usgs.gov/earthquakes/eventpage/${UA}" | grep HTTP)
+		if [ $prod == 1 ]; then
+			UA_OP=$(curl -s -I "http://prod01-earthquake.cr.usgs.gov/earthquakes/eventpage/${UA}" | grep HTTP)
+		elif [ $prod == 2 ]; then
+			UA_OP=$(curl -s -I "http://prod02-earthquake.cr.usgs.gov/earthquakes/eventpage/${UA}" | grep HTTP)
+		else
+			UA_OP=$(curl -s -I "http://earthquake.usgs.gov/earthquakes/eventpage/${UA}" | grep HTTP)
+		fi
 		if [ -z "$UA_OP" ]; then
 			UA_OP=BLANK
 		fi
@@ -59,6 +69,7 @@ do
 	rm ServiceUA_output.txt
 	grep "Moved Permanently" SUA_OP.txt | awk '{print $1}' >> NonAuthoritative_output2.txt
 	grep "200 OK" SUA_OP.txt | awk '{print $1}'  >> Authoritative_output2.txt
+	grep "404 Not Found" TMP.txt | awk '{print $1}' >> Missing2.txt
 	grep "Service Unavailable" SUA_OP.txt | awk '{print $1}' >> ServiceUA_output.txt
 	grep "BLANK" SUA_OP.txt | awk '{print $1}' >> ServiceUA_output.txt
 	rm SUA_OP.txt
@@ -67,6 +78,7 @@ rm ServiceUA_output.txt
 # Concatenate Output
 cat NonAuthoritative_output.txt NonAuthoritative_output2.txt > NA_output.txt
 cat Authoritative_output.txt Authoritative_output2.txt > A_output.txt
+cat Missing.txt Missing2.txt > M_output.txt
 rm NonAuthoritative_output.txt NonAuthoritative_output2.txt Authoritative_output.txt Authoritative_output2.txt > DEBUG
 rm DEBUG
 echo Formatting Output Files
@@ -105,5 +117,6 @@ mv NA.txt ./OUTPUT/.
 mv A.txt ./OUTPUT/.
 mv curl_OP.txt ./OUTPUT/.
 mv EventId.csv ./OUTPUT/.
+mv M_output.csv ./OUTPUT/.
 echo done
 
