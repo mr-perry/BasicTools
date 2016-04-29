@@ -2,7 +2,18 @@
 read -p "Enter catalog:   " CT
 read -p "Enter Start year:  " St_Yr
 read -p "Enter End year:   " En_Yr
-read -p "Enter system [0 - normal, 1 - Prod1, 2 - Prod2]:   " SY
+read -p "Enter system [0 - Prod, 1 - Prod1, 2 - Prod2, 3 - Dev, 4 - Dev1, 5 - Dev2]:   " SY
+if [ $SY -eq 1 ]; then
+	SERV=prod01
+elif [ $SY -eq 2 ]; then
+	SERV=prod02
+elif [ $SY -eq 3 ]; then
+	SERV=dev
+elif [ $SY -eq 4 ]; then
+	SERV=dev01
+elif [ $SY -eq 5 ]; then
+	SERV=dev02
+fi
 YR=$St_Yr
 home_dir=$(pwd)
 while [[ $YR -le $En_Yr ]]
@@ -26,21 +37,18 @@ do
 		fi
 		fname=$(echo ${CT}${ii}.csv)
 		if [ -z "$CT" ]; then
-			if [[ $SY == 1 ]]; then
-				curl -s "http://prod01-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&orderby=time-asc" > ${fname}
-			elif [[ $SY == 2 ]]; then
-				curl -s "http://prod02-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&orderby=time-asc" > ${fname}
-			else
+			if [ $SY -eq 0 ]; then
                			curl -s "http://earthquake.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&orderby=time-asc" > ${fname}
+			else
+				curl -s "http://${SERV}-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&orderby=time-asc" > ${fname}
 			fi
 		else
 			fname=$(echo ${CT}${ii}.csv)
-			if [[ $SY == 1 ]]; then
-				curl -s "http://prod01-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
-			elif [[ $SY == 2 ]]; then
-				curl -s "http://prod02-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
-			else
+			if [ $SY -eq 0 ]; then
                			curl -s "http://earthquake.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
+			else
+				echo $SERV
+				curl -s "http://${SERV}-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
 			fi
 		fi
 		#
