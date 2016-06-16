@@ -47,7 +47,6 @@ do
 			if [ $SY -eq 0 ]; then
                			curl -s "http://earthquake.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
 			else
-				echo $SERV
 				curl -s "http://${SERV}-earthquake.cr.usgs.gov/fdsnws/event/1/query.csv?starttime=${YR}-${ii}-1%2000:00:00&endtime=${YR}-${ii}-${ed}%2023:59:59&catalog=${CT}&orderby=time-asc" > ${fname}
 			fi
 		fi
