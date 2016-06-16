@@ -1,11 +1,39 @@
 #!/bin/bash
-#fname="/Users/mrperry/Documents/CATALOGS/ANSS/AK/ANSS_AK.cnss"
-#fname="US.2011.06.cnss"
-#fname="AK.1928.02.cnss"
-#fname="TEST.cnss"
-#fname="TEST_AK.cnss"
-#fname="/Users/mrperry/Documents/CATALOGS/ANSS/MB/ANSS_MB.cnss"
-fname="/Users/mrperry/Documents/CATALOGS/ANSS/AV/ANSS_AV.cnss"
+####################################################################
+#
+# CNSS format to CSV format Converter
+#
+# This script will convert a file given in CNSS format into a simple
+# hypocentral CSV file formatted:
+# ID, Origin Time, Latitude, Longitude, Depth, Magnitude, Event Type
+# for use in various MATLAB programs.
+#
+# This script does not need to be run in the folder containing the file
+# and the user will be prompted for both the file path and name
+#
+# Inputs:
+# workdir -- Path to the CNSS file that needs to be converted
+# fname -- File Name (no path necessary, but it won't hurt either
+#
+# Output:
+# 
+# reformat.csv -- Reformatted CSV file containing the hypocentral
+# information discussed above
+#
+# Written by: Matthew R. Perry
+# Last Edit: 14 June 2016
+#
+###################################################################
+#
+# Clear working screen and begin script
+#
+clear
+#
+# User defined input
+#
+read -p "Enter File Path:   " workdir
+read -p "Enter File Name:   " fname
+cd $workdir
 #
 # Get Number of Events
 #
@@ -122,3 +150,6 @@ while read LINE; do
 		echo "$ii,$YR-$MN-$DY $HR:$MM:$SC,$LAT,$LON,$DEP,$MAG,$ETY" >> $newfile
 	fi
 done < $fname
+#
+# End of Script
+#
