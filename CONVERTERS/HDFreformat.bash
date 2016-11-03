@@ -1,10 +1,24 @@
 #!/bin/bash
+###########################################################
 #
-# Convert HDF Format to format readable by QCreport and QCmulti 
+# Convert HDF Format to format readable by CatStat 
+#
+# Inputs:
+#     fname: HDF file to be converted.  Be path specific.
+#     newfile: Name of output file. Please include file extension.
+#       
+# Outputs:
+#	newfile: CSV file with the following fields: EventID, Origin Time, Latitude
+#		Longitude, Depth, Magnitude, Event Type
+#               
+# Written By: Matthew R. Perry
+# Last Edit: 03 November 2016
+#               
+############################################################
 #
 # HDF Format yr mon day hr mn sc.ff lat lon dp dpty dpfrominp mag magty 
 read -p "Enter File Name:   " file
-newfile="reformat.csv"
+read -p "Enter output file name:   " newfile
 echo "ID,OT,Lat,Lon,Dep,Mag,MagTy,EvType" > $newfile
 #
 # Go through file

@@ -1,7 +1,14 @@
 #!/bin/bash
+###########################################################
 #
 #
+# MLOC to CSV file converter.  Will return both hypocenter file and associated phase files
 #
+# Written By: Matthew R. Perry
+# Last Edit: 03 November 2016
+#               
+############################################################
+
 read -p "Enter File Name:   " file
 read -p "Enter File Name for Hypocenter Data:   " hypo_file
 echo "ID,OT,Lat,Lon,Dep,Mag,MagTy" > $hypo_file
