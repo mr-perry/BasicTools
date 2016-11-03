@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Get counts!!!!
+#
 read -p "Enter catalog:   " CT
 read -p "Enter Start year:  " YR
 read -p "Enter End year:  " En_YR

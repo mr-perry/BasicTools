@@ -16,11 +16,11 @@
 #             format: Origin Time, Latitude, Longitude, Depth, Magnitude, Magnitude Type
 #     phase_file -- name of the file is determined by the origin time of the associate hypocenter.  
 #                   Will be located in ./PICK under the specified directory
-#             format: Station, Phase, Quality, Pick Time, Angle of Incidence, Time Residual, Distance, Azimuth at Sourcei, Weight
+#             format: Station, Phase, Quality, Pick Time, Angle of Incidence, Time Residual, Distance, Azimuth at Source, Weight
 #
 #
 # Written By: Matthew R. Perry
-# Last Edit: 14 June 2016
+# Last Edit: 03 November 2016
 #
 ############################################################
 #

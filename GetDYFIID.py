@@ -2,6 +2,8 @@
 #
 # Import necessary Libraries
 #
+# Python script that reads a list of EventIDs and produces a list of DYFI? IDs associate with EventIDs
+#
 import os
 import urllib2 as request
 import json

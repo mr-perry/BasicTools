@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Download data from ComCat; quicker than getcsv.py but has less options 
+#
 read -p "Enter catalog:   " CT
 read -p "Enter Start year:  " St_Yr
 read -p "Enter End year:   " En_Yr
@@ -58,9 +61,38 @@ do
 		fi	
 		let ii=ii+1
 	done
-	cat ${CT}1.csv ${CT}2.csv ${CT}3.csv ${CT}4.csv ${CT}5.csv ${CT}6.csv ${CT}7.csv ${CT}8.csv ${CT}9.csv ${CT}10.csv ${CT}11.csv ${CT}12.csv > ${CT}${YR}.csv
+	cat ${CT}1.csv ${CT}2.csv ${CT}3.csv ${CT}4.csv ${CT}5.csv ${CT}6.csv ${CT}7.csv ${CT}8.csv ${CT}9.csv ${CT}10.csv ${CT}11.csv ${CT}12.csv > ${CT}_${YR}.csv
 	rm *.csv-e
-	mv ${CT}${YR}.csv ../.
-	let YR=YR+1
+	mv ${CT}_${YR}.csv ../.
 	cd $home_dir
+	rm -rf ${YR}
+	if [[ $YR -ne $St_Yr ]]; then
+		sed -i -e "1d" ${CT}_${YR}.csv
+		rm *.csv-e
+	fi
+	let YR=YR+1
 done
+if [ -z ${CT} ]; then
+	cat ${CT}_*.csv > data.csv
+else
+	cat ${CT}_*.csv > ${CT}.csv
+fi
+rm ${CT}_*.csv
+#YR=$St_Yr
+#while [[ $YR -le $En_Yr ]]
+#do
+#	if [[ $YR -ne $St_Yr ]]; then
+#		tail -n +2 ${CT}${YR}.csv > cut_${CT}${YR}.csv
+#	else
+#		cp ${CT}${YR}.csv cut_${CT}${YR}.csv
+#	fi
+#	let YR=YR+1
+#done
+#if [ -z "$CT" ]; then
+#        cat cut_* > data.csv
+#else
+#        cat cut_* > ${CT}.csv
+#fi
+#rm -rf 19*
+#rm -rf 20*
+#rm -rf cut_*

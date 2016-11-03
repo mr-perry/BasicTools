@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Same as getData but downloads phase data instead
+#
 read -p "Enter catalog:   " CT
 read -p "Enter Start year:  " St_Yr
 read -p "Enter End year:   " En_Yr

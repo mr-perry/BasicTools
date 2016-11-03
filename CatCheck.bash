@@ -43,6 +43,9 @@ if [ $format -eq 1 ]; then
 	awk -v F1="$file" -F "\"*,\"*" '{print $12}' "${file}" > EventId.csv
 elif [ $format -eq 2 ]; then
 	awk -v F1="$file" -F "\"*,\"*" '{print $1}' "${file}" > EventId.csv
+elif [ $format -eq 3 ]; then
+	echo "EventIDs already parsed"
+	mv $file EventId.csv
 else
 	echo "Format Not Recognized"
 fi

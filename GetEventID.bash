@@ -1,5 +1,5 @@
 #!/bin/bash
-clear
+# Script that parses either ComCat or LibComCat files for Event ID
 #
 # Get File Name
 #
