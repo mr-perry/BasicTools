@@ -1,6 +1,6 @@
 # BasicTools
 ## ArchiveComCat
-_Backup.bash_ -- Overall script that runs the Archive scripts
+_Backup.bash_ -- Overall script that runs the Archive scripts \n
 _ArchiveComCat.bash_ -- Hypocenter and magnitude back-up of Authoritative ComCat
 _ArchiveGlobal.bash_ -- Hypocenter and magnitude back-up of Global Catalogs
 _ArchiveRegional.bash_ -- Hypocenter and magnitude back-up of Regional Catalogs
