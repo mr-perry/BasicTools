@@ -18,6 +18,8 @@ elif [ $SY -eq 5 ]; then
 	SERV=dev02
 fi
 YR=$St_Yr
+mkdir getDataTEMP
+cd ./getDataTEMP/.
 home_dir=$(pwd)
 while [[ $YR -le $En_Yr ]]
 do
@@ -78,21 +80,6 @@ else
 	cat ${CT}_*.csv > ${CT}.csv
 fi
 rm ${CT}_*.csv
-#YR=$St_Yr
-#while [[ $YR -le $En_Yr ]]
-#do
-#	if [[ $YR -ne $St_Yr ]]; then
-#		tail -n +2 ${CT}${YR}.csv > cut_${CT}${YR}.csv
-#	else
-#		cp ${CT}${YR}.csv cut_${CT}${YR}.csv
-#	fi
-#	let YR=YR+1
-#done
-#if [ -z "$CT" ]; then
-#        cat cut_* > data.csv
-#else
-#        cat cut_* > ${CT}.csv
-#fi
-#rm -rf 19*
-#rm -rf 20*
-#rm -rf cut_*
+mv ${CT}.csv ../.
+cd ../.
+rm -rf getDataTEMP
